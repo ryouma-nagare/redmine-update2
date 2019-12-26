@@ -1,0 +1,128 @@
+##############################################################
+# prepare
+##############################################################
+- name: define dirs
+  set_fact:
+    plugin_dir: "{{ redmine_dir }}/plugins"
+    theme_dir: "{{ redmine_dir }}/public/themes"
+    default_branch: "master"
+
+##############################################################
+# update redmine
+##############################################################
+- block:
+  - name: check .git
+    stat:
+      path: "{{ redmine_dir }}/.git"
+    register: is_redmine_from_git
+  
+  - name: check .svn
+    stat:
+      path: "{{ redmine_dir }}/.svn"
+    register: is_redmine_from_svn
+
+  - block:
+    - name: update redmine from git
+      become: yes
+      become_user: root
+      command: >
+        su -s {{ shell }} - {{ redmine_owner }}
+        -c "cd {{ redmine_dir }} ; {{ git_bin }} pull}"
+    when: 
+      - is_redmine_from_git.stat.exists == true
+      - is_redmine_from_git.stat.isdir == true
+      - is_redmine_from_svn.stat.exists == false
+
+  - block:
+    - name: update redmine from svn
+      become: yes
+      become_user: root
+      command: >
+        su -s {{ shell }} - {{ redmine_owner }}
+        -c "cd {{ redmine_dir }} ; {{ svn_bin }} up --trust-server-cert --non-interactive"
+    when: 
+      - is_redmine_from_svn.stat.exists == true
+      - is_redmine_from_svn.stat.isdir == true
+      - is_redmine_from_git.stat.exists == false
+
+##############################################################
+# update plugins
+##############################################################
+- block:
+  - name: get plugins path name
+    find:
+      path: "{{ plugin_dir }}"
+      file_type: directory
+      recurse: no
+    register: plugin_path_names
+
+  - name: get plugins basename
+    set_fact: 
+      base_plugin_names: "{{ plugin_path_names.files | map(attribute='path') | map('basename') | list }}"
+
+  - name: loop for plugins
+    include: update_plugins.yml
+    with_items:
+      - "{{ base_plugin_names }}"
+    loop_control:
+      loop_var: base_plugin_path
+
+##############################################################
+# update themes
+##############################################################
+- block:
+  - name: get themes path name
+    find:
+      path: "{{ theme_dir }}"
+      file_type: directory
+      recurse: no
+    register: theme_path_names
+
+  - name: get themes basename
+    set_fact: 
+      base_theme_names: "{{ theme_path_names.files | map(attribute='path') | map('basename') | list }}"
+
+  - name: loop for themes
+    include: update_themes.yml
+    with_items:
+      - "{{ base_theme_names }}"
+    loop_control:
+      loop_var: base_theme_path
+
+##############################################################
+# gem update
+##############################################################
+- block:
+  - name: delete Gemfile.lock
+    become: yes
+    become_user: root
+    file:
+      path: "{{ redmine_dir }}/Gemfile.lock"
+      state: absent
+    ignore_errors: yes
+
+  - name: gem update
+    become: yes
+    become_user: root
+    command: >
+      su -s {{ shell }} - {{ redmine_owner }}
+      -c "cd {{ redmine_dir }} ; {{ bundle_bin }} {{ item }}"
+    with_items:
+      - "update"
+      - "install --without development test"
+      - "clean"
+
+##############################################################
+# db migrations
+##############################################################
+- block:
+  - name: db migrations
+    become: yes
+    become_user: root
+    command: >
+      su -s {{ shell }} - {{ redmine_owner }}
+      -c "cd {{ redmine_dir }} ; RAILS_ENV=production {{ bundle_bin }} exec rake {{ item }}"
+    with_items:
+      - "db:migrate"
+      - "redmine:plugins:migrate"
+    notify: restart service

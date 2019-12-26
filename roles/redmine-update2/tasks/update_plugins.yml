@@ -1,0 +1,26 @@
+##############################################################
+# update plugin
+##############################################################
+- block:
+  - name: check .git in plugin dir
+    stat:
+      path: "{{ plugin_dir }}/{{ base_plugin_path }}/.git"
+    register: is_plugin_from_git
+  
+  - debug:
+      msg: "plugin name: {{ base_plugin_path }}"
+
+  - name: update plugin from git
+    become: yes
+    become_user: root
+    command: >
+      su -s {{ shell }} - {{ redmine_owner }}
+      -c "cd {{ plugin_dir }}/{{ base_plugin_path }} ; {{ git_bin }} {{ item }}"
+    with_items:
+      - "fetch"
+      - "checkout {{ plugins[base_plugin_path] | default(default_branch) }}"
+      - "pull"
+    when: 
+      - is_plugin_from_git.stat.exists == true
+      - is_plugin_from_git.stat.isdir == true
+    ignore_errors: true

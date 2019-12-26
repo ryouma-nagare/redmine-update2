@@ -1,0 +1,24 @@
+##############################################################
+# update theme
+##############################################################
+- block:
+  - name: check .git in theme dir
+    stat:
+      path: "{{ plugin_dir }}/{{ base_theme_path }}/.git"
+    register: is_theme_from_git
+  
+  - debug:
+      msg: "theme name: {{ base_theme_path }}"
+
+  - name: update theme from git
+    become: yes
+    become_user: root
+    command: >
+      su -s {{ shell }} - {{ redmine_owner }}
+      -c "cd {{ theme_dir }}/{{ base_theme_path }} ; {{ git_bin }} {{ item }}"
+    with_items:
+      - "pull"
+    when: 
+      - is_theme_from_git.stat.exists == true
+      - is_theme_from_git.stat.isdir == true
+    ignore_errors: true

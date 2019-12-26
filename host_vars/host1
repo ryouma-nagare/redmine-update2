@@ -1,0 +1,22 @@
+######################################################################################
+# Plugin to specify branch
+# * If not specified, leave only plugins:
+######################################################################################
+plugins:
+  "redmine_xls_export" : "0.2.1.t11"
+  "redmine_vividtone_my_page_blocks" : "redmine-4.0"
+
+######################################################################################
+# If the path does not pass through the bundle/svn/git, describe with the full path
+######################################################################################
+shell: /bin/bash
+redmine_dir: /opt/redmine
+redmine_owner: apache
+bundle_bin: bundle
+svn_bin: svn
+git_bin: git
+
+######################################################################################
+# restart service after update
+######################################################################################
+services: [ redmine , httpd ]
