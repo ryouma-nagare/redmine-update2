@@ -27,7 +27,7 @@
       become_user: root
       command: >
         su -s {{ shell }} - {{ redmine_owner }}
-        -c "cd {{ redmine_dir }} ; {{ git_bin }} pull}"
+        -c "cd {{ redmine_dir }} ; {{ git_bin }} pull"
     when: 
       - is_redmine_from_git.stat.exists == true
       - is_redmine_from_git.stat.isdir == true
