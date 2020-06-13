@@ -23,4 +23,5 @@
     when: 
       - is_plugin_from_git.stat.exists == true
       - is_plugin_from_git.stat.isdir == true
+      - plugins is defined
     ignore_errors: true

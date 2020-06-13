@@ -3,15 +3,14 @@
 
 ## 概要
 
-LinuxにインストールしたRedmineの本体／プラグイン／テーマをアップデートするためのplaybook
+LinuxにインストールしたRedmine/RedMicaの本体／プラグイン／テーマをアップデートするためのplaybook
 
 ## 前提条件
 
 * systemdを採用しているLinux
 * Redmineをsvn、またはRedMicaをgitでインストールしている
 * プラグイン／テーマをgitでインストールしている
-* svn/git/bundle/awk コマンドをインストールしている
-* ログインユーザが`パスワード無しでsudo`できる
+* svn/git/bundle コマンドをインストールしている
 
 ## 環境依存の設定
 
@@ -19,11 +18,12 @@ LinuxにインストールしたRedmineの本体／プラグイン／テーマ�
 - `inventory/hosts`
   - `ホスト名`：任意の名前（ラベル）
   - `ansible_host`：FQDN または IP
-  - `ansible_user`：SSHでログインするユーザ名
-  - `ansible_password`：パスワード
+  - `ansible_ssh_user`：SSHでログインするユーザ名
+  - `ansible_ssh_pass`：パスワード
+  - `ansible_become_pass`：パスワード
   - `ansible_private_key_file`：鍵ファイル名
 
-※ansible_password/ansible_private_key_file はいずれかを指定
+※ansible_ssh_pass/ansible_private_key_file はいずれかを指定
 
 
 ### ホスト変数設定
@@ -37,6 +37,7 @@ LinuxにインストールしたRedmineの本体／プラグイン／テーマ�
 1. 複数指定する場合は行を繰り返し指定
 1. 常に最新に更新するプラグインは指定不要
 1. ブランチ指定がない場合は、 `plugins:` のみ残す
+1. `plugins:` を消した場合は、pluginのアップデートを行いません
 
 #### 実行するコマンド
 - `shell`:シェルのフルパス
