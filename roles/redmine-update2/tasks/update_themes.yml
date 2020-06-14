@@ -4,7 +4,7 @@
 - block:
   - name: check .git in theme dir
     stat:
-      path: "{{ plugin_dir }}/{{ base_theme_path }}/.git"
+      path: "{{ theme_dir }}/{{ base_theme_path }}/.git"
     register: is_theme_from_git
   
   - debug:
