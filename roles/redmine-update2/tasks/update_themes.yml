@@ -12,10 +12,11 @@
 
   - name: update theme from git
     become: yes
-    become_user: root
-    command: >
-      su -s {{ shell }} - {{ redmine_owner }}
-      -c "cd {{ theme_dir }}/{{ base_theme_path }} ; {{ git_bin }} {{ item }}"
+    become_user: "{{ redmine_owner }}"
+    shell: "{{ git_bin }} {{ item }}"
+    args:
+      executable: "{{ shell }}"
+      chdir: "{{ theme_dir }}/{{ base_theme_path }}"
     with_items:
       - "pull"
     when: 

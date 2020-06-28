@@ -24,10 +24,11 @@
   - block:
     - name: update redmine from git
       become: yes
-      become_user: root
-      command: >
-        su -s {{ shell }} - {{ redmine_owner }}
-        -c "cd {{ redmine_dir }} ; {{ git_bin }} pull"
+      become_user: "{{ redmine_owner }}"
+      shell: "{{ git_bin }} pull"
+      args:
+        executable: "{{ shell }}"
+        chdir: "{{ redmine_dir }}"
     when: 
       - is_redmine_from_git.stat.exists == true
       - is_redmine_from_git.stat.isdir == true
@@ -36,10 +37,11 @@
   - block:
     - name: update redmine from svn
       become: yes
-      become_user: root
-      command: >
-        su -s {{ shell }} - {{ redmine_owner }}
-        -c "cd {{ redmine_dir }} ; {{ svn_bin }} up --trust-server-cert --non-interactive"
+      become_user: "{{ redmine_owner }}"
+      shell: "{{ svn_bin }} up --trust-server-cert --non-interactive"
+      args:
+        executable: "{{ shell }}"
+        chdir: "{{ redmine_dir }}"
     when: 
       - is_redmine_from_svn.stat.exists == true
       - is_redmine_from_svn.stat.isdir == true
@@ -103,10 +105,11 @@
 
   - name: gem update
     become: yes
-    become_user: root
-    command: >
-      su -s {{ shell }} - {{ redmine_owner }}
-      -c "cd {{ redmine_dir }} ; {{ bundle_bin }} {{ item }}"
+    become_user: "{{ redmine_owner }}"
+    shell: "{{ bundle_bin }} {{ item }}"
+    args:
+      executable: "{{ shell }}"
+      chdir: "{{ redmine_dir }}"
     with_items:
       - "update"
       - "install --without development test"
@@ -118,10 +121,11 @@
 - block:
   - name: db migrations
     become: yes
-    become_user: root
-    command: >
-      su -s {{ shell }} - {{ redmine_owner }}
-      -c "cd {{ redmine_dir }} ; RAILS_ENV=production {{ bundle_bin }} exec rake {{ item }}"
+    become_user: "{{ redmine_owner }}"
+    shell: "RAILS_ENV=production {{ bundle_bin }} exec rake {{ item }}"
+    args:
+      executable: "{{ shell }}"
+      chdir: "{{ redmine_dir }}"
     with_items:
       - "db:migrate"
       - "redmine:plugins:migrate"
