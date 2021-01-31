@@ -18,6 +18,7 @@
       executable: "{{ shell }}"
       chdir: "{{ theme_dir }}/{{ base_theme_path }}"
     with_items:
+      - "fetch"
       - "pull"
     when: 
       - is_theme_from_git.stat.exists == true
