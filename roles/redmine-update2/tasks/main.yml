@@ -29,6 +29,8 @@
       args:
         executable: "{{ shell }}"
         chdir: "{{ redmine_dir }}"
+      environment:
+        http_proxy: "{{ http_proxy }}"
     when: 
       - is_redmine_from_git.stat.exists == true
       - is_redmine_from_git.stat.isdir == true
@@ -42,6 +44,8 @@
       args:
         executable: "{{ shell }}"
         chdir: "{{ redmine_dir }}"
+      environment:
+        http_proxy: "{{ http_proxy }}"
     when: 
       - is_redmine_from_svn.stat.exists == true
       - is_redmine_from_svn.stat.isdir == true

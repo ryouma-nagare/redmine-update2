@@ -17,6 +17,8 @@
     args:
       executable: "{{ shell }}"
       chdir: "{{ plugin_dir }}/{{ base_plugin_path }}"
+    environment:
+      http_proxy: "{{ http_proxy }}"
     with_items:
       - "fetch"
       - "checkout {{ plugins[base_plugin_path] | default(default_branch) }}"

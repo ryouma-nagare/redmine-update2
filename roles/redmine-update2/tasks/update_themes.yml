@@ -17,6 +17,8 @@
     args:
       executable: "{{ shell }}"
       chdir: "{{ theme_dir }}/{{ base_theme_path }}"
+    environment:
+      http_proxy: "{{ http_proxy }}"
     with_items:
       - "fetch"
       - "pull"
