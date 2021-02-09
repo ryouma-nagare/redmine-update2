@@ -47,6 +47,11 @@ LinuxにインストールしたRedmine/RedMicaの本体／プラグイン／テ
   - `redmine_owner`で各コマンドにパスが通っていない場合はフルパスを記述
 - `http_proxy`: プロキシURL
   - 不要な場合は空のまま
+  - プラグイン／テーマを gitプロトコルでcloneしている場合は、`redmine_owner`の`~/.gitconfig` に以下を追記
+```
+[url "https://"]
+        insteadOf = git://
+```
 
 #### 再起動するサービス名
 - `services`:アップデート後に`systemctl restart`するサービス名のリスト
