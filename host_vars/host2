@@ -15,6 +15,7 @@ redmine_owner: apache
 bundle_bin: bundle
 svn_bin: svn
 git_bin: git
+http_proxy: http://proxy.example.com:8080
 
 ######################################################################################
 # restart service after update

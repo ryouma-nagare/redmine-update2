@@ -39,12 +39,14 @@ LinuxにインストールしたRedmine/RedMicaの本体／プラグイン／テ
 1. ブランチ指定がない場合は、 `plugins:` のみ残す
 1. `plugins:` を消した場合は、pluginのアップデートを行いません
 
-#### 実行するコマンド
+#### ディレクトリなどの変数
 - `shell`:シェルのフルパス
 - `redmine_dir`:Redmineのインストールディレクトリ
 - `redmine_owner`:`redmine_dir`のオーナユーザ
 - `bundle_bin`/`svn_bin`/`git_bin`:各コマンド名
   - `redmine_owner`で各コマンドにパスが通っていない場合はフルパスを記述
+- `http_proxy`: プロキシURL
+  - 不要な場合は空のまま
 
 #### 再起動するサービス名
 - `services`:アップデート後に`systemctl restart`するサービス名のリスト
