@@ -13,12 +13,13 @@
   - name: update theme from git
     become: yes
     become_user: "{{ redmine_owner }}"
-    shell: "{{ git_bin }} {{ item }}"
+    shell: "git {{ item }}"
     args:
       executable: "{{ shell }}"
       chdir: "{{ theme_dir }}/{{ base_theme_path }}"
     environment:
       http_proxy: "{{ http_proxy }}"
+      PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     with_items:
       - "fetch"
       - "pull"

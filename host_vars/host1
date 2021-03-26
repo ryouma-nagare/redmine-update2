@@ -12,9 +12,6 @@ plugins:
 shell: /bin/bash
 redmine_dir: /opt/redmine
 redmine_owner: apache
-bundle_bin: bundle
-svn_bin: svn
-git_bin: git
 http_proxy: ""
 
 ######################################################################################

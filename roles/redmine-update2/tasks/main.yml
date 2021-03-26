@@ -25,12 +25,13 @@
     - name: update redmine from git
       become: yes
       become_user: "{{ redmine_owner }}"
-      shell: "{{ git_bin }} pull"
+      shell: "git pull"
       args:
         executable: "{{ shell }}"
         chdir: "{{ redmine_dir }}"
       environment:
         http_proxy: "{{ http_proxy }}"
+        PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     when: 
       - is_redmine_from_git.stat.exists == true
       - is_redmine_from_git.stat.isdir == true
@@ -40,12 +41,13 @@
     - name: update redmine from svn
       become: yes
       become_user: "{{ redmine_owner }}"
-      shell: "{{ svn_bin }} up --trust-server-cert --non-interactive"
+      shell: "svn up --trust-server-cert --non-interactive"
       args:
         executable: "{{ shell }}"
         chdir: "{{ redmine_dir }}"
       environment:
         http_proxy: "{{ http_proxy }}"
+        PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     when: 
       - is_redmine_from_svn.stat.exists == true
       - is_redmine_from_svn.stat.isdir == true
@@ -110,12 +112,13 @@
   - name: gem update
     become: yes
     become_user: "{{ redmine_owner }}"
-    shell: "{{ bundle_bin }} {{ item }}"
+    shell: "bundle {{ item }}"
     args:
       executable: "{{ shell }}"
       chdir: "{{ redmine_dir }}"
     environment:
       http_proxy: "{{ http_proxy }}"
+      PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     with_items:
       - "update"
       - "install --without development test"
@@ -128,10 +131,12 @@
   - name: db migrations
     become: yes
     become_user: "{{ redmine_owner }}"
-    shell: "RAILS_ENV=production {{ bundle_bin }} exec rake {{ item }}"
+    shell: "RAILS_ENV=production bundle exec rake {{ item }}"
     args:
       executable: "{{ shell }}"
       chdir: "{{ redmine_dir }}"
+    environment:
+      PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     with_items:
       - "db:migrate"
       - "redmine:plugins:migrate"

@@ -13,12 +13,13 @@
   - name: update plugin from git
     become: yes
     become_user: "{{ redmine_owner }}"
-    shell: "{{ git_bin }} {{ item }}"
+    shell: "git {{ item }}"
     args:
       executable: "{{ shell }}"
       chdir: "{{ plugin_dir }}/{{ base_plugin_path }}"
     environment:
       http_proxy: "{{ http_proxy }}"
+      PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
     with_items:
       - "fetch"
       - "checkout {{ plugins[base_plugin_path] | default(default_branch) }}"

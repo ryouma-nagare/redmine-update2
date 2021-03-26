@@ -43,8 +43,6 @@ LinuxにインストールしたRedmine/RedMicaの本体／プラグイン／テ
 - `shell`:シェルのフルパス
 - `redmine_dir`:Redmineのインストールディレクトリ
 - `redmine_owner`:`redmine_dir`のオーナユーザ
-- `bundle_bin`/`svn_bin`/`git_bin`:各コマンド名
-  - `redmine_owner`で各コマンドにパスが通っていない場合はフルパスを記述
 - `http_proxy`: プロキシURL
   - 不要な場合は空のまま
   - プラグイン／テーマを gitプロトコルでcloneしている場合は、`redmine_owner`の`~/.gitconfig` に以下を追記
