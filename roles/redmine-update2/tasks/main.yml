@@ -69,7 +69,7 @@
       base_plugin_names: "{{ plugin_path_names.files | map(attribute='path') | map('basename') | list }}"
 
   - name: loop for plugins
-    include: update_plugins.yml
+    include_tasks: update_plugins.yml
     with_items:
       - "{{ base_plugin_names }}"
     loop_control:
@@ -91,7 +91,7 @@
       base_theme_names: "{{ theme_path_names.files | map(attribute='path') | map('basename') | list }}"
 
   - name: loop for themes
-    include: update_themes.yml
+    include_tasks: update_themes.yml
     with_items:
       - "{{ base_theme_names }}"
     loop_control:
