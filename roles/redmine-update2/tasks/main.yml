@@ -5,6 +5,7 @@
   set_fact:
     plugin_dir: "{{ redmine_dir }}/plugins"
     theme_dir: "{{ redmine_dir }}/public/themes"
+    theme_dir2: "{{ redmine_dir }}/themes"
     default_branch: "master"
 
 ##############################################################
@@ -91,6 +92,25 @@
       base_theme_names: "{{ theme_path_names.files | map(attribute='path') | map('basename') | list }}"
 
   - name: loop for themes
+    include_tasks: update_themes.yml
+    with_items:
+      - "{{ base_theme_names }}"
+    loop_control:
+      loop_var: base_theme_path
+
+- block:
+  - name: get themes path name(rails7)
+    find:
+      path: "{{ theme_dir2 }}"
+      file_type: directory
+      recurse: no
+    register: theme_path_names
+
+  - name: get themes basename(rails7)
+    set_fact:
+      base_theme_names: "{{ theme_path_names.files | map(attribute='path') | map('basename') | list }}"
+
+  - name: loop for themes(rails7)
     include_tasks: update_themes.yml
     with_items:
       - "{{ base_theme_names }}"
