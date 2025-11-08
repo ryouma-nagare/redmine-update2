@@ -161,4 +161,5 @@
       - "db:migrate"
       - "redmine:plugins:migrate"
       - "assets:clobber"
+      - "assets:precompile"
     notify: restart service
