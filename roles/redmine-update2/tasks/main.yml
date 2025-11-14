@@ -160,6 +160,7 @@
     with_items:
       - "db:migrate"
       - "redmine:plugins:migrate"
-      - "assets:clobber"
+      - "tmp:clean"
+      - "assets:clean"
       - "assets:precompile"
     notify: restart service
